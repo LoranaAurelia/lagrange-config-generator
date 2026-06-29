@@ -36,6 +36,7 @@ interface LagrangeConfigBase {
     StrictNativeTier: boolean;
     UseSyntheticProfile: boolean;
     EnableStatusRegister: boolean;
+    EnableTelemetryDebug: boolean;
     IncludeRawStatePushHex: boolean;
     AdvancedProbeTimeoutMs: number;
     StatePushTimeoutMs: number;
@@ -147,7 +148,7 @@ const signServerOptions: SignServerOption[] = [
   {
     id: 'experimental-cdn',
     group: '试验',
-    name: '雪桃-寰网引路',
+    name: '雪桃-试验-寰网引路',
     url: 'https://seal-sign.xuetao.host/49738',
     note: '全球CDN入口。纯试验签名，常重启改动，且需要配合雪桃改版Lagrange使用，并提交日志给雪桃。请加入QQ群83306954获取详情。',
   },
@@ -179,6 +180,7 @@ function App() {
       StrictNativeTier: false,
       UseSyntheticProfile: true,
       EnableStatusRegister: false,
+      EnableTelemetryDebug: false,
       IncludeRawStatePushHex: false,
       AdvancedProbeTimeoutMs: 1500,
       StatePushTimeoutMs: 1000,
@@ -356,6 +358,13 @@ function App() {
               />
             </ListItem>
             <ListItem>
+              <ListItemText primary={'EnableTelemetryDebug'} secondary={'记录 SignServer 在线可信度相关处理过程，默认关闭'} />
+              <Switch
+                checked={configBase.SignServer.EnableTelemetryDebug}
+                onChange={e => setConfigBase(draft => { draft.SignServer.EnableTelemetryDebug = e.target.checked; })}
+              />
+            </ListItem>
+            <ListItem>
               <ListItemText primary={'IncludeRawStatePushHex'} secondary={'仅调试包字节时开启'} />
               <Switch
                 checked={configBase.SignServer.IncludeRawStatePushHex}
@@ -446,7 +455,7 @@ function App() {
           </List>
           <Divider />
           <List sx={{ paddingX: 3, paddingY: 2 }}>
-            <ListItemText primary={'诊断与数据库'} secondary={'有关运行日志、抓包和 Realm 数据库的设定'} />
+            <ListItemText primary={'诊断'} secondary={'有关运行日志和抓包的设定'} />
             <ListItem>
               <ListItemText primary={'启用文件日志'} secondary={'同步输出 runtime log 和 unsupported SSO packet dumps'} />
               <Switch
@@ -462,6 +471,10 @@ function App() {
                 sx={{ width: 0.3 }}
               />
             </ListItem>
+          </List>
+          <Divider />
+          <List sx={{ paddingX: 3, paddingY: 2 }}>
+            <ListItemText primary={'数据库'} secondary={'有关 Realm 数据库的设定'} />
             <ListItem>
               <ListItemText primary={'启用数据库'} secondary={'启用 Realm-backed message lookup；默认关闭'} />
               <Switch
